@@ -76,7 +76,7 @@ var server = http.createServer(app);
 var io = require('socket.io')(server);
 
 //connect mqtt server
-var mqtt_url = 'mqtt://localhost:7410'
+var mqtt_url = 'mqtt://192.168.12.99:1883'
 var mqtt_client = require('../api/mqtt')
 
 mqtt_client(mqtt_url, io)
