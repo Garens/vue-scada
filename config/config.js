@@ -7,7 +7,7 @@
 
  module.exports = {
      mysql: {
-         host: '192.168.12.231',
+         host: '192.168.12.98',
          database: 'scada',
          user: 'root',
          password: 'root',

@@ -1,11 +1,31 @@
 <template>
     <div class="page-table">
-        <Table :data="tableData" :columns="tableColumns" stripe></Table>
+        <Table :data="opcData" :columns="tableColumns" stripe></Table>
         <div style="margin: 10px;overflow: hidden">
             <div style="float: right;">
                 <Page :total="pageTotal" :current="1" @on-change="changePage" show-sizer></Page>
             </div>
         </div>
+    
+        <Modal v-model="isShowModal" :title="modalTitle" @on-ok="subModal" @on-cancel="cancelModal">
+            <Form :model="formItem" :label-width="80">
+                <Form-item label="tagName">
+                    <Input v-model="formItem.tagName" placeholder="请输入"></Input>
+                </Form-item>
+                <Form-item label="类别">
+                    <Select v-model="formItem.type" placeholder="请选择">
+                        <Option value="int">Int</Option>
+                        <Option value="string">String</Option>
+                    </Select>
+                </Form-item>
+                <Form-item label="默认值">
+                    <Input v-model="formItem.value" placeholder="请输入"></Input>
+                </Form-item>
+                <Form-item label="描述">
+                    <Input v-model="formItem.desc" type="textarea" :autosize="{minRows: 2,maxRows: 5}" placeholder="请输入..."></Input>
+                </Form-item>
+            </Form>
+        </Modal>
     </div>
 </template>
 <script>
@@ -14,6 +34,9 @@ import { mapActions, mapState, mapGetters } from 'vuex'
 export default {
     data() {
         return {
+            isShowModal: false,         //是否显示弹出框
+            modalTitle: '编辑',           //对话框标题
+            formItem: {},               //弹出框的form数据
             pageTotal: 10,
             tableData: [],
             tableColumns: [
@@ -56,6 +79,54 @@ export default {
                             }
                         }, text);
                     }
+                },
+                {
+                    title: '操作',
+                    key: 'action',
+                    align: 'center',
+                    render: (h, params) => {
+                        return h('div', [
+                            h('Button', {
+                                props: {
+                                    type: 'primary',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.editItem(params)
+                                    }
+                                }
+                            }, '编辑'),
+                            h('Button', {
+                                props: {
+                                    type: 'warning',
+                                    size: 'small'
+                                },
+                                style: {
+                                    marginRight: '5px'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.ctrlToOpc(params)
+                                    }
+                                }
+                            }, '控制'),
+                            h('Button', {
+                                props: {
+                                    type: 'info',
+                                    size: 'small'
+                                },
+                                on: {
+                                    click: () => {
+                                        this.ctrlToWeb(params)
+                                    }
+                                }
+                            }, '模拟')
+                        ]);
+                    }
                 }
             ]
         }
@@ -63,25 +134,26 @@ export default {
     computed: {
         ...mapGetters({
             opcItem: 'opcItem'
-        })
+        }),
+        opcData() {
+            // var data = [];
+            // this.$store.state.opcData.forEach((item, key) => {
+            //     console.log(item);
+            //     data.push(item);
+            // })
+            return this.$store.state.opcData;
+        }
     },
     watch: {
         opcItem: 'watchOpcItem'
     },
     mounted() {
-        this.getOpcDataTable();
-        // this.$mqtt.subscribe('device/#');
-        console.log(this);
-        // this.$store.state.opcData.forEach((item, key) => {
-        //     this.tableData.push(item);
-        // });
-        // if (this.opcItem) {
-        //     this.tableData.push(this.opcItem);
-        // }
-        // this.tableData = this.$store.state.opcData;
-
-        // this.tableData.push(this.$store.state.opcItem);
-        //this.$store.state.opcItem;
+        this.formItem = {
+            tagName: '',
+            type: '',
+            value: '',
+            desc: ''
+        }
     },
     /**
      * 使用vue-socket.io连接方式
@@ -95,26 +167,54 @@ export default {
             this.opcItem = val;
         }
     },
-    /**
-     * 使用vue-mqtt连接方式
-     */
-    // mqtt: {
-    //     'device/#'(data) {
-    //         // console.log(data.toString());
-    //         let obj = JSON.parse(data.toString());
-    //         // console.log(this.tableData);
-
-    //         if (this.tableData.length > 20) {
-    //             this.tableData.splice();
-    //         }
-    //         this.tableData = obj;
-    //     }
-    // },
     methods: {
+        /**
+         * 点击对话框的取消
+         */
+        cancelModal() {
+            console.log(2);
+        },
+        /**
+         * 点击对话框的“确定”
+         */
+        subModal() {
+            console.log(this.formItem);
+            this.$http.post('/api/changeItem', this.formItem).then((res) => {
+                console.log(res);
+            }).catch((err) => {
+                console.log(err);
+            });
+        },
+        /**
+         * 模拟数据至前端页面
+         * @param {Object} item 当前行对象
+         */
+        ctrlToWeb(item) {
+            console.log(item);
+        },
+        /**
+         * 模拟数据至底层
+         * @param {Object} item 当前行对象
+         */
+        ctrlToOpc(item) {
+            console.log(item);
+        },
+        /**
+         * 编辑数据
+         * @param {Object} item 当前行对象
+         */
+        editItem(item) {
+            console.log(item);
+            this.isShowModal = true;
+            this.formItem = item.row;
+        },
+        /**
+         * 监视opcItem数据变化
+         */
         watchOpcItem(val, old) {
             if (val) {
-                this.tableData = [];
-                this.tableData.push(val);
+                // this.tableData = [];
+                // this.tableData.push(val);
             }
         },
         /**
@@ -125,12 +225,12 @@ export default {
             var _this = this;
             this.$http.get('/api/getOpcDataTable', { params: {} }).then((ret) => {
                 console.log(ret.data);
-                if(!ret.data.flag) {
+                if (!ret.data.flag) {
                     console.log('请求数据出错。');
                 }
                 var data = ret.data.data;
                 _this.tableData = data;
-            }).catch(function(err) {
+            }).catch(function (err) {
                 console.log(err);
             });
         },

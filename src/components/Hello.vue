@@ -29,6 +29,7 @@ export default {
       });
     },
     test() {
+      this.open(true);
       console.log(this);
     }
   }
