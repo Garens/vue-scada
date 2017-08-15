@@ -31,6 +31,8 @@
 <script>
 import { mapActions, mapState, mapGetters } from 'vuex'
 
+import { changeOpcItem } from '@/api/getData'
+
 export default {
     data() {
         return {
@@ -136,7 +138,9 @@ export default {
             opcItem: 'opcItem'
         }),
         opcData() {
-            return this.$store.state.opc.opcData;
+            var data = this.$store.state.opc.opcData;
+            this.pageTotal = data.length;
+            return data;
         }
     },
     watch: {
@@ -172,13 +176,13 @@ export default {
         /**
          * 点击对话框的“确定”
          */
-        subModal() {
-            console.log(this.formItem);
-            this.$http.post('/api/changeItem', this.formItem).then((res) => {
-                console.log(res);
-            }).catch((err) => {
-                console.log(err);
-            });
+        async subModal() {
+            console.log(this);
+
+            var res = await changeOpcItem('post', '/api/changeItem', this.formItem);
+            if(res.status === 1) {
+                this.$store.dispatch('getOpcData');
+            } 
         },
         /**
          * 模拟数据至前端页面

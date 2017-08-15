@@ -8,3 +8,5 @@ import axios from 'axios'
 import fetch from '@/config/fetch'
 
 export const getOpcDatas = data => fetch('get', '/api/getAllOpcData');
+
+export const changeOpcItem = (type, url, data) => fetch(type, url, data);

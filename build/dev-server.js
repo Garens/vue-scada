@@ -12,6 +12,7 @@ var webpack = require('webpack')
 var proxyMiddleware = require('http-proxy-middleware')
 var webpackConfig = require('./webpack.dev.conf')
 var mqtt = require('mqtt')
+var bodyParser = require('body-parser')
 
 // default port where dev server listens for incoming traffic
 var port = process.env.PORT || config.dev.port
@@ -59,6 +60,13 @@ app.use(devMiddleware)
 // enable hot-reload and state-preserving
 // compilation error display
 app.use(hotMiddleware)
+
+app.use(bodyParser.json())
+app.use(bodyParser.urlencoded({
+    limit:'50mb',
+    extended: true,
+    parameterLimit:50000
+}))
 
 // 后端路由入口
 var api = require('../api/api')

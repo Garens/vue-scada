@@ -17,18 +17,18 @@ export default async (type = 'GET', url = '', data = {}) => {
             if (res.data.flag) {
                 return { status: 1, data: res.data.data };
             } else {
-                return { status: 0, msg: '获取数据失败' };
+                return { status: 0, msg: '数据操作失败' };
             }
         }).catch(err => {
             return { status: 0, msg: err };
         })
         return r;
     } else if (type === 'POST') {
-        var r = await axios.post(url, { params: data }).then((res) => {
+        var r = await axios.post(url, data).then((res) => {
             if (res.data.flag) {
                 return { status: 1, data: res.data.data };
             } else {
-                return { status: 0, msg: '获取数据失败' };
+                return { status: 0, msg: '数据操作失败' };
             }
         }).catch(err => {
             return { status: 0, msg: err };

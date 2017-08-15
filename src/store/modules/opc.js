@@ -10,7 +10,22 @@ export default {
         opcData: [],
     },
     actions: {
-        
+        /**
+        * 获取opcData数据
+        * @param {Object} commit 
+        */
+        async getOpcData({ commit }) {
+            try {
+                const res = await getOpcDatas();
+                if (res.status === 1) {
+                    commit('saveOpcData', res.data);
+                } else {
+                    throw new Error(res);
+                }
+            } catch (err) {
+                console.log('有问题！', err);
+            }
+        }
     },
     mutations: {
         /**
@@ -38,9 +53,22 @@ export default {
         SOCKET_DEVICE: (state, data) => {
             state.opcItem = data;
 
-            state.opcData.find(item => item.id === data.id).value = data.value;
-            state.opcData.find(item => item.id === data.id).timer = data.timer;
+            let obj = state.opcData.find(item => item.id === data.id);
+            if (obj) {
+                obj.value = data.value;
+                obj.timer = data.timer;
+            }
 
+        },
+        /**
+         * 有commit saveOpcData 的提交时触发
+         * 保存opcData数据
+         * 
+         * @param {Object} state 
+         * @param {Object} opcDatas 
+         */
+        saveOpcData(state, opcDatas) {
+            state.opcData = opcDatas;
         }
     }
 }

@@ -102,6 +102,7 @@ module.exports = (url, io) => {
 
         if (!isCache) {
             insertToDb(obj);
+            cache.put(obj.tagName, obj);
             return;
         }
         // cache.put(tagName, obj);        //更新或添加cache中的数据

@@ -11,7 +11,8 @@ import 'iview/dist/styles/iview.css'
 // Vue.use(VueMqtt, 'http://localhost:7411');
 
 import VueSocketio from 'vue-socket.io';
-Vue.use(VueSocketio, 'http://192.168.12.98:8080', store);
+import {host, port} from '../config/config';
+Vue.use(VueSocketio, 'http://'+host+':'+port, store);
 
 import axios from 'axios'
 Vue.prototype.$http = axios

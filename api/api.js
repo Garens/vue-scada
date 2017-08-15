@@ -19,7 +19,7 @@ router.get('/getAllOpcData', function (req, res) {
 });
 
 //修改opc数据
-router.get('/changeItem', function (req, res) {
+router.post('/changeItem', function (req, res) {
     var params = req.body;
     OpcData.changeItem(params, function(ret) {
         res.send(ret);

@@ -6,6 +6,8 @@
  */
 
  module.exports = {
+     host: '192.168.12.98',
+     port: '8080',
      mysql: {
          host: '192.168.12.98',
          database: 'scada',

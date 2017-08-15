@@ -19,7 +19,7 @@ exports.changeItem = function(params, callback) {
   if(!params) {
     return callback({flag: false, msg: '传入数据有误'});
   }
-  gmodel.opcData.upset(params).then(function(ret) {
+  gmodel.opcData.upsert(params).then(function(ret) {
     callback({flag: true, data: ret});
   }).catch(function(err) {
     callback({flag: false, msg: '更新数据失败'});
