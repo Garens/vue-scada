@@ -33,13 +33,10 @@ const mutations = {
 	 * 收到主题为device类型的数据时候
 	 */
 	SOCKET_DEVICE: (state, data) => {
-		state.opcData = [];
 		state.opcItem = data;
-		var has = state.dataMap.has(data.id);
-		state.dataMap.set(data.id, data);
-		state.dataMap.forEach((item) => {
-			state.opcData.push(item);
-		})
+
+		state.opcData.find(item => item.id === data.id).value = data.value;
+		state.opcData.find(item => item.id === data.id).timer = data.timer;
 
 	},
 	/**
@@ -50,10 +47,6 @@ const mutations = {
 	 * @param {Object} opcDatas 
 	 */
 	saveOpcData(state, opcDatas) {
-		for (var i in opcDatas) {
-			state.dataMap.set(opcDatas[i].id, opcDatas[i]);
-			opcDatas[i].timer = opcDatas[i].timer.replace('T', ' ').replace('.000Z', '');
-		}
 		state.opcData = opcDatas;
 	}
 }

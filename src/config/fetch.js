@@ -24,7 +24,7 @@ export default async (type = 'GET', url = '', data = {}) => {
         })
         return r;
     } else if (type === 'POST') {
-        await axios.post(url, { params: data }).then((res) => {
+        var r = await axios.post(url, { params: data }).then((res) => {
             if (res.data.flag) {
                 return { status: 1, data: res.data.data };
             } else {
@@ -33,5 +33,6 @@ export default async (type = 'GET', url = '', data = {}) => {
         }).catch(err => {
             return { status: 0, msg: err };
         })
+        return r;
     }
 }
