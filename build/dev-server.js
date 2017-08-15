@@ -68,7 +68,7 @@ app.use('/api', api)
 var staticPath = path.posix.join(config.dev.assetsPublicPath, config.dev.assetsSubDirectory)
 app.use(staticPath, express.static('./static'))
 
-var uri = 'http://localhost:' + port
+var uri = 'http://1921.68.12.98:' + port
 
 var http = require('http');
 

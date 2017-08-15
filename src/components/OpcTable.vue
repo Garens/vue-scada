@@ -136,12 +136,7 @@ export default {
             opcItem: 'opcItem'
         }),
         opcData() {
-            // var data = [];
-            // this.$store.state.opcData.forEach((item, key) => {
-            //     console.log(item);
-            //     data.push(item);
-            // })
-            return this.$store.state.opcData;
+            return this.$store.state.opc.opcData;
         }
     },
     watch: {
